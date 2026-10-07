@@ -1,0 +1,195 @@
+# Safety floor of the developer-tutor kit (Codex edition). The language is Starlark, a small Python-like language.
+#
+# Codex asks ("prompt") or refuses ("forbidden") before it runs a command that BEGINS with one of these patterns.
+# Where two rules match, the stricter one wins: forbidden, then prompt, then allow.
+#
+# A rule matches the start of a command only. "git push --force" is caught, but "git push origin main --force" is not.
+# That is why EVERY "git push" asks, and why AGENTS.md says a force push is never allowed.
+# Rules are best effort. They stop accidents and obvious mistakes. They do not stop a determined or tricked agent.
+# Codex loads this file only for a trusted project. Restart Codex after you change it.
+
+# ---- Publishing and history -------------------------------------------------------------------------------------
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "A push publishes your work. Check that no secrets are included. A force push (--force, -f, +branch) is never allowed: answer no.",
+)
+
+prefix_rule(
+    pattern = ["git", "push", ["--force", "-f", "--mirror"]],
+    decision = "forbidden",
+    justification = "A force push can erase other people's work online. Use a normal push, or fetch and merge first.",
+)
+
+prefix_rule(
+    pattern = ["git", ["filter-branch", "filter-repo"]],
+    decision = "forbidden",
+    justification = "This rewrites the whole Git history. Ask your tutor to explain the safe way first.",
+)
+
+prefix_rule(
+    pattern = ["git-filter-repo"],
+    decision = "forbidden",
+    justification = "This rewrites the whole Git history. Ask your tutor to explain the safe way first.",
+)
+
+prefix_rule(
+    pattern = ["git", "reflog", "expire"],
+    decision = "forbidden",
+    justification = "This erases the safety net that lets Git recover lost work.",
+)
+
+prefix_rule(
+    pattern = ["git", "gc", "--prune=now"],
+    decision = "forbidden",
+    justification = "This permanently erases unreferenced Git objects.",
+)
+
+prefix_rule(
+    pattern = ["git", "clean", ["-fdx", "-xdf", "-fxd", "-dfx", "-xfd", "-dxf"]],
+    decision = "forbidden",
+    justification = "This deletes every untracked and ignored file, including your .env and your notes.",
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "prompt",
+    justification = "This deletes files that Git does not track. Check the list first with git clean -n.",
+)
+
+prefix_rule(
+    pattern = ["git", "reset", ["--hard", "--keep"]],
+    decision = "prompt",
+    justification = "This throws away changes in your files. Make a save point first.",
+)
+
+prefix_rule(
+    pattern = ["git", "checkout", ["--", "."]],
+    decision = "prompt",
+    justification = "This throws away changes in your files. Make a save point first.",
+)
+
+prefix_rule(
+    pattern = ["git", "restore", "."],
+    decision = "prompt",
+    justification = "This throws away changes in your files. Make a save point first.",
+)
+
+prefix_rule(
+    pattern = ["git", "branch", "-D"],
+    decision = "prompt",
+    justification = "This deletes a branch even if its work is not merged.",
+)
+
+prefix_rule(
+    pattern = ["git", "stash", ["drop", "clear"]],
+    decision = "prompt",
+    justification = "This deletes stashed work for good.",
+)
+
+prefix_rule(
+    pattern = ["git", "remote", ["add", "set-url"]],
+    decision = "prompt",
+    justification = "This changes where your code is sent. Check the address.",
+)
+
+prefix_rule(
+    pattern = ["gh", "repo", "delete"],
+    decision = "forbidden",
+    justification = "Deleting a repository cannot be undone. Do it yourself on the GitHub website if you really mean it.",
+)
+
+prefix_rule(
+    pattern = ["gh", "auth", "token"],
+    decision = "forbidden",
+    justification = "This prints your GitHub login token. A token must never appear in the chat.",
+)
+
+# ---- Secrets ----------------------------------------------------------------------------------------------------
+
+prefix_rule(
+    pattern = [["cat", "type", "head", "tail", "less", "more", "bat", "Get-Content", "gc"], [".env", "./.env", ".env.local", ".env.production"]],
+    decision = "forbidden",
+    justification = "Do not print secrets into the chat. Open the file yourself and tell the tutor only the names of the settings, not the values.",
+)
+
+prefix_rule(
+    pattern = ["git", "add", [".env", ".env.local", ".env.production"]],
+    decision = "forbidden",
+    justification = "A .env file holds secrets and must never go into Git. Add it to .gitignore instead.",
+)
+
+# ---- Deleting and system changes --------------------------------------------------------------------------------
+
+prefix_rule(
+    pattern = ["rm", ["-rf", "-fr", "-r", "-R"]],
+    decision = "prompt",
+    justification = "This deletes a folder and everything inside it, and skips the Trash.",
+)
+
+prefix_rule(
+    pattern = ["rm", ["-rf", "-fr"], ["/", "~", ".git", ".git/"]],
+    decision = "forbidden",
+    justification = "This would delete your whole computer, your home folder or your Git history.",
+)
+
+prefix_rule(
+    pattern = ["Remove-Item"],
+    decision = "prompt",
+    justification = "This deletes files or folders. Check the path first.",
+)
+
+prefix_rule(
+    pattern = [["rmdir", "rd", "del"]],
+    decision = "prompt",
+    justification = "This deletes files or folders. Check the path first.",
+)
+
+prefix_rule(
+    pattern = ["chmod", "-R", "777"],
+    decision = "forbidden",
+    justification = "This lets every user on the computer change every file below the folder.",
+)
+
+prefix_rule(
+    pattern = [["mkfs", "fdisk", "parted", "diskpart", "Format-Volume", "Clear-Disk"]],
+    decision = "forbidden",
+    justification = "This can erase a whole disk.",
+)
+
+prefix_rule(
+    pattern = ["sudo"],
+    decision = "prompt",
+    justification = "This runs a command with full administrator rights.",
+)
+
+prefix_rule(
+    pattern = [["Set-ExecutionPolicy", "Invoke-Expression", "iex"]],
+    decision = "prompt",
+    justification = "This changes what PowerShell is allowed to run, or runs text as a command.",
+)
+
+prefix_rule(
+    pattern = [["npm", "pnpm", "yarn"], ["install", "i", "add"], ["-g", "--global"]],
+    decision = "prompt",
+    justification = "A global install changes your computer outside this project.",
+)
+
+prefix_rule(
+    pattern = ["docker", "compose", "down", "-v"],
+    decision = "prompt",
+    justification = "This deletes the data volumes of your containers.",
+)
+
+prefix_rule(
+    pattern = ["docker", "volume", ["rm", "prune"]],
+    decision = "prompt",
+    justification = "This deletes stored container data.",
+)
+
+prefix_rule(
+    pattern = [["terraform", "kubectl"], ["destroy", "delete"]],
+    decision = "prompt",
+    justification = "This deletes cloud or cluster resources.",
+)

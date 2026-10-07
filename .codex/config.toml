@@ -1,0 +1,10 @@
+# Project settings of the developer-tutor kit (Codex edition).
+# Codex reads this file only after you trust the project folder.
+# The two settings below are what Codex recommends for a folder under version control. They are written
+# out so that you can see them. Change them with /permissions in Codex, not by editing this file.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# AGENTS.md of the kit is about 18 KB. Codex stops reading instruction files at 32 KiB in total, and
+# your own ~/.codex/AGENTS.md counts too, so there is room to spare. This allows a little more.
+project_doc_max_bytes = 49152

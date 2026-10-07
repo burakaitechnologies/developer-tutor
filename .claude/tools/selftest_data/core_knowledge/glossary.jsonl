@@ -1,3 +1,0 @@
-{"term": "API key", "aliases": ["api keys"], "plain": "A secret password that lets a program use a service.", "domain": "sec", "jargon": true}
-{"term": "branch", "aliases": [], "plain": "A separate line of saved work in Git.", "domain": "git", "jargon": true}
-{"term": "terminal", "aliases": ["command line"], "plain": "A window where you type commands.", "domain": "term", "jargon": true}

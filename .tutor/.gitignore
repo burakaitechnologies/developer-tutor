@@ -1,0 +1,3 @@
+# The learner's private notes. Git ignores everything in this folder except this file.
+*
+!.gitignore

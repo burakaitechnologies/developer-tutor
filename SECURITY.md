@@ -1,169 +1,95 @@
 # Security
 
-This page lists everything the kit runs or changes. It also says how to check it yourself. Facts about Claude Code were checked in its documentation on 2026-10-07.
+This page lists everything in this edition that Codex reads, or that changes what Codex may do. It also says how you can check it yourself. Facts about Codex are marked (checked 2026-10-08) where they appear. Their source is the Codex documentation of that date.
 
 ## Read this first
 
-- The kit is text files until you turn on the helper scripts.
-- The safety guard stops accidents and obvious mistakes. It does not stop a determined or tricked agent.
-- Windows has no operating-system sandbox for Claude Code commands. The Claude Code sandboxing page says so, checked 2026-10-07.
+- The kit is text files. It has no scripts, no hooks and no program of its own.
+- Codex enforces the sandbox, the approvals and the rules. Text in `AGENTS.md` and in the skills is advice that the model reads.
+- The default sandbox lets Codex write inside the project folder. Network access for commands is off by default (checked 2026-10-08).
+- The rules stop accidents and obvious mistakes. They do not stop a determined or tricked agent.
 
-## Everything that runs or changes behaviour
-
-### The permission floor
+## What changes Codex's behaviour
 
 | Part | What it does | When it applies |
 |---|---|---|
-| `.claude/settings.json`, `permissions` | Denies reads of secret files such as `.env`, key files and cloud credentials. Denies force pushes and destructive commands. Asks before other risky commands. Allows the eleven skills to start. | Every Claude Code session in the folder. It works without Python. |
-| `.claude/.gitignore` | Ignores `agent-memory/tutor-data/`, `settings.local.json`, `*.tutor-backup` and Python caches. Nothing else. | When Git reads the folder. |
+| `AGENTS.md` | Instructions for the tutor: voice, hard rules, teaching moves, memory and safety. | Read at the start of each session. It is advice, not a lock. |
+| `.agents/skills/*/SKILL.md` | Instructions for the eleven skills. | When you name a skill, or when its description fits your request. |
+| `.codex/config.toml` | Sets `approval_policy = "on-request"`, `sandbox_mode = "workspace-write"` and `project_doc_max_bytes = 49152` (48 KiB). | Only after you trust the folder. |
+| `.codex/rules/tutor.rules` | Asks before `git push`, `rm -rf`, `Remove-Item`, `sudo` and similar commands. Refuses a force push, a history rewrite, deleting a repository, and printing `.env` with `cat`, `type` or `Get-Content`. | Only after you trust the folder. Restart Codex after a change. |
+| `.codex/agents/*.toml` | Two helpers, `architecture_reviewer` and `code_reviewer`. Both have `sandbox_mode = "read-only"`. | Only when you, or a skill, ask Codex to start one. |
+| `.tutor/.gitignore` | Tells Git to ignore everything in `.tutor/` except that file. | When Git reads the folder. |
 
-### Commands the skills may run without a question
+## What the kit does not contain
 
-A skill may run only the commands in its front matter (`allowed-tools`). Each command also has a PowerShell form. Any other command is not pre-approved by a skill.
+- No scripts in any language: no Python, shell or PowerShell files.
+- No hooks. Codex supports hooks, but this edition does not use them (checked 2026-10-08).
+- No allow rules. The kit approves no command in advance.
+- No MCP servers, no plugins and no custom prompts.
+- No network code.
 
-| Skill | Commands it may run without a question | Network |
-|---|---|---|
-| tutor | `doctor.py check`; `python --version` (also `python3` and `py -3`); `printenv CLAUDE_CODE_ENTRYPOINT` | No |
-| progress | `doctor.py progress` | No |
-| tutor-setup | `python --version` (also `python3` and `py -3`); `printenv CLAUDE_CODE_ENTRYPOINT` | No |
-| before-push | `git status`, `git log`, `git remote -v`, `git check-ignore`, `git ls-files`, `git grep`, `git shortlog`; `gh --version`; `gh repo view` | Yes: `gh repo view` asks GitHub through your own `gh` program |
-| git-rescue | `git status`, `git log`, `git reflog -n`, `git stash list` | No |
-| explain, fix-it, learn, new-project, save-point, think-first | None listed in the front matter | Not applicable |
+## What Codex may run without a question
 
-The `doctor.py` pattern in the table covers the `python3`, `python` and `py -3` forms.
+Codex decides this, not the kit. With `on-request`, commands that the sandbox allows can run without approval (checked 2026-10-08). Commands that write outside the project folder, or that need the network, ask first. Git writes ask first, because `.git` is read-only in the sandbox (checked 2026-10-08).
 
-### The helper scripts (hooks)
+The docs describe rules as controlling commands that run outside the sandbox. This kit assumes that the rules also apply to commands inside the project folder. The owner check tests this (see [docs/test-report.md](docs/test-report.md), steps 12 and 13).
 
-The hooks are off in the shipped kit. You turn them on with `doctor.py enable-hooks` or with `install.py --enable-hooks`. They use the Python named in the launcher.
+## Network
 
-| Hook | Runs when | Reads | Writes | Can block a step? |
-|---|---|---|---|---|
-| SessionStart | A session starts, resumes, is cleared, is compacted or is forked | Your profile, the state file, `now.md`, the decision index, and read-only Git status | `state/state.json`. On a startup or a clear, removes chat copies older than 30 days. | No |
-| UserPromptSubmit | Before each message you send | Your message, the profile, the state and ledger files, and your progress list | `state/recent-user.json` (the last five messages, redacted), `state/activity.jsonl`, `state/state.json`. Writes `chat/` only if chat copy is on. | No |
-| PreToolUse | Before a shell command, Write, Edit or NotebookEdit call | The tool call, read-only Git state, and the scripts a command names | `state/state.json`, guard counters only. | Yes. It denies a dangerous call or asks you first. |
-| PostToolUse | After a shell command, Write, Edit or NotebookEdit call | The tool result and the inbox folder | `state/activity.jsonl`, `state/state.json`, and `learner/progress.jsonl`. Deletes the inbox files it reads. | No |
-| Stop | When Claude finishes an answer | The final answer text, your profile and the activity log | `state/ledger.jsonl`, `state/state.json`, and `learner/progress.jsonl`. Prints nothing. | No |
-| SubagentStart | When a helper agent starts | The helper type name (`agent_type`) from its input | Nothing | No |
+- The kit makes no network call.
+- Codex sends your chat to OpenAI to get answers. The docs say file excerpts, prompts and tool results may be sent to OpenAI services to complete a task (checked 2026-10-08).
+- By default, Codex also sends a small amount of anonymous usage and health data to OpenAI. The `analytics.enabled` setting in `~/.codex/config.toml` turns this off (checked 2026-10-08).
+- Web search is on by default in cached mode. Treat web results as untrusted (checked 2026-10-08).
 
-The hook log never stores your prompt or command text. It stores only the error type, the module and the line.
+## How to audit this kit
 
-### The tools you run
+All files are plain text. Read them before you trust the folder.
 
-| Tool | Who runs it, and when | What it changes | Network |
-|---|---|---|---|
-| `tools/doctor.py` | You, or a skill. The skill rules are in the table above. | `enable-hooks` and `disable-hooks` edit `settings.json` and keep a backup. `share-notes` edits `.claude/.gitignore` and the project root `.gitignore`. `wipe` deletes tutor data, and only with `--yes`. | No, except `share-notes on`. It asks GitHub through your own `gh` program. |
-| `tools/install.py` | You, once for each project, and again for an update or an uninstall. | Copies kit files into your project. Merges `settings.json`. Writes lines to `.claude/.gitignore`. | No |
-| `tools/validate.py` | Maintainers and CI | Nothing, unless you give a `--write-` option. Those options rewrite generated files in the kit. | No |
-| `tools/selftest.py` | Maintainers, CI, and `install.py`, which runs a quick run in a temporary copy | Temporary folders only | No |
+- Windows (PowerShell): `Get-ChildItem -Path AGENTS.md, .codex, .agents -Recurse -File`
+- macOS and Linux: `find AGENTS.md .codex .agents -type f`
+- Read `.codex/config.toml`, `.codex/rules/tutor.rules` and the two files in `.codex/agents/`.
+- Test one rule: `codex execpolicy check --pretty --rules .codex/rules/tutor.rules -- git push origin main`. The JSON output shows the decision. Expect `prompt`. The `execpolicy` command is in preview (checked 2026-10-08).
+- In Codex, type `/status` to see the approval policy and the writable folders (checked 2026-10-08).
 
-The self-test files in `.claude/tools/` are in the learner's copy. The scripts in the repository's `tests/` folder are not. They are for maintainers, and each one is listed below.
+## The trust question
 
-| Repository-only script | Who runs it | What it changes | Network |
-|---|---|---|---|
-| `tests/test_mock_cli.py` | Maintainers. It starts the real `claude` program against a fake model. | Temporary folders only | Local only: a fake model on 127.0.0.1 |
-| `tests/guard_mcli.py` | Maintainers. Guard checks through the real `claude` program and the fake model. | Temporary folders only | Local only: 127.0.0.1 |
-| `tests/harness/` | Maintainers. The test harness that the two files above use. | Temporary folders only | Local only: 127.0.0.1 |
-| `tests/sim_session.py` | Maintainers | Temporary folders only | No |
-| `tests/scenario_core_12turn.py` | Maintainers. A scripted 12-turn session against the real hooks. | Temporary folders only | No |
-| `tests/lint_py39.py` | Maintainers and CI. It reads the test code only. | Nothing | No |
+Codex loads a project's `.codex/` settings, hooks and rules only when you trust the project. An untrusted project skips those `.codex/` layers (checked 2026-10-08). Codex may also start in read-only mode until you trust the folder.
 
-## No script of the kit makes a network call
-
-No script of the kit makes a network call. The one exception is `doctor.py share-notes on`. That command asks GitHub through your own `gh` program, and only after you agree.
-
-You can check this yourself.
-
-1. Run the security scan. It looks for network modules, code-running calls and unsafe subprocess calls:
-
-   ```
-   python .claude/tools/selftest.py --security
-   ```
-
-2. Search the Python files for import lines. Your editor can search a folder. Look in `.claude/hooks/` and `.claude/tools/`. Search for lines that start with `import socket`, `import urllib`, `import http`, `import requests` or `import ftplib`, and for `from urllib` or `from http`. Text hits are normal. The same words appear in strings, regular expressions and test lists, and no shipped module imports them. The security scan in step 1 is the real check.
-
-If the scan reports a problem, do not use that copy.
-
-## Install only from a release tag, and compare the manifest
-
-Download the ZIP of a release tag. Do not download the main branch of the repository. The release notes name the tag.
-
-After you copy the kit into your project, run this command from the project folder:
-
-```
-python .claude/tools/doctor.py verify
-```
-
-The command compares each kit file with the SHA-256 value in `MANIFEST.txt`. It also runs the security scan. A changed file is reported. Do not use a copy that reports a changed file, unless you made the change yourself.
-
-## Audit someone else's folder before you trust it
-
-A project folder can hold hooks and settings that run when you open it. Claude Code asks you whether to trust the folder in interactive use. It does not ask in non-interactive mode (`claude -p`). Before you trust a folder that you did not write, list what it can run:
-
-```
-python .claude/tools/doctor.py audit path/to/other-project
-```
-
-The audit runs nothing and changes nothing. It lists hooks, status lines, key-helper commands, environment settings, allow rules, `.mcp.json`, scripts in `package.json`, and similar items. Ask Claude to explain each item before you trust the folder.
+A project folder can change what Codex may do. Trust only a folder that you wrote, or that you have read. The docs do not say that `AGENTS.md` or `.agents/skills` are skipped in an untrusted folder. The owner check looks at this (see [docs/test-report.md](docs/test-report.md), steps 6 and 7).
 
 ## Threat model and limits
 
-The guard stops accidents and obvious mistakes. Examples:
+The kit is built to stop accidents and obvious mistakes. It does not stop:
 
-- deleting the project folder, the home folder or a drive root
-- a force push to any remote
-- a secret file read by a shell program
-- a key-shaped value written into a file or a command
-- a change to the kit's own safety files
+- A model that reads text in a file or web page and then follows it. This is called prompt injection. The kit tells the tutor to treat such text as data. That is advice, not a lock.
+- A force push written after the branch name, such as `git push origin main --force`. The push rule asks first. The forbidden rule matches only the start of a command, so it does not catch this form.
+- A command wrapped in another shell, such as `bash -lc` or `powershell -Command`. Codex splits only simple chains of commands into single commands before it checks the rules (checked 2026-10-08). A rule may not match a wrapped command.
+- A read of `.env` with another command or another path form, such as `Get-Content -Path .env`.
+- Commands that you type yourself in the terminal, and edits that you make outside Codex.
+- A wrong fact in the kit or in a model answer. Check important facts yourself.
 
-The guard does not stop:
+## What is stored, and how to delete it
 
-- a model that reads text from a web page or a file and follows it (prompt injection)
-- a determined agent
-- scripts that the model did not write, and compiled programs
-- MCP tools and web fetches
-- commands that you type yourself in the terminal
-- edits made outside Claude Code
-- a hook that times out, or a broken `settings.json`
-
-The full list of known gaps is in [How the kit works](.claude/docs/how-it-works.md#the-safety-guard-and-its-known-gaps). Maintainers also keep the list of command-guard gaps in the repository's `tests/guard-known-gaps.txt`. That file does not cover the commit and push scanner or the things the guard cannot see at all; those are in the page above.
-
-## What is stored, and how to wipe it
-
-The tutor stores its data in your project, in `.claude/agent-memory/tutor-data/`. It holds your profile, notes, progress list, journal, state and, if you turn it on, chat copies. Git ignores this folder.
-
-Claude Code keeps its own transcript of each session on your computer. Terminal session transcripts are deleted after 30 days by default (`cleanupPeriodDays`). Desktop app transcripts are kept at any age unless you set `desktopSessionCleanupPeriodDays`. The settings reference, checked 2026-10-07, says so.
-
-To delete the tutor's data, run one of these commands:
-
-```
-python .claude/tools/doctor.py wipe chat
-```
-
-```
-python .claude/tools/doctor.py wipe state
-```
-
-```
-python .claude/tools/doctor.py wipe all
-```
-
-Each command shows how many files it would delete. It deletes them only when you add `--yes`.
+- The tutor's notes are in `.tutor/` in your project. They are plain Markdown. Git ignores them.
+- By default, Codex saves session transcripts under its home folder, `~/.codex`. The `history.persistence` setting controls this (checked 2026-10-08).
+- To delete the tutor's notes, delete the `.tutor` folder yourself. This cannot be undone. Copy the folder first if you want to keep the notes.
 
 ## Privacy
 
-- Everything you type goes to Anthropic. That is the same as any Claude Code chat.
-- Claude Code keeps the transcript on your computer. The tutor's own copies are redacted. The transcript is not.
-- If you paste a key or a password into a chat, rotate it. Make a new key, then delete the old one at the provider that issued it.
-- Chat copies are off by default.
-- OneDrive, iCloud, Dropbox and Google Drive can upload your notes. Keep your project outside synced folders. A Git folder inside a synced folder can break.
-- The tutor's scripts make no network calls, except as described above.
+- Everything you type goes to OpenAI as part of the chat. The docs say prompts and file excerpts may be sent to OpenAI services to complete a task (checked 2026-10-08).
+- This kit did not check OpenAI's terms or privacy policy. Read them before you put private data in a chat.
+- Do not paste a secret into a chat. A secret is a password, an API key or a token. If you do, it is exposed. Revoke it at its provider, then make a new one. Keep secrets in a `.env` file that Git ignores.
+- `.tutor/` stays on your computer, and Git ignores it. Codex reads those files when it needs them. Their text can then go to OpenAI too.
+- Keep the project out of OneDrive, iCloud and Dropbox. Sync can upload your notes and can damage Git folders.
 
 ## How to report a vulnerability
 
 Use this repository's **Security** tab. Choose **Report a vulnerability**. This is private reporting.
 
-Do not open a public issue for a security problem. If the button is missing, the owner has not turned on private reporting yet. For a GitHub contact, use the repository page, or run `gh repo view` in your own terminal to see the repository's owner.
+Do not open a public issue for a security problem. If the button is missing, the owner has not turned on private reporting yet.
 
 ## Supported versions
 
-Fixes go to the latest release only. Older tags do not get fixes. The current version is in `.claude/VERSION`.
+Fixes go to the latest version only. The current version is 1.0.0, in `.agents/tutor/VERSION`. Older versions get no fixes.
+
+Codex changes often. A Codex fact that was true on 2026-10-08 can change later.
