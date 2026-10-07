@@ -1,0 +1,7 @@
+{"term":"API","aliases":["web API"],"plain":"An API is a list of requests one program can send to another.","domain":"web","jargon":true}
+{"term":"endpoint","aliases":["end point"],"plain":"An endpoint is one address of an API that answers one kind of request.","domain":"web","jargon":true}
+{"term":"JSON","aliases":[],"plain":"JSON is a way to write data as plain text with names and values.","domain":"data","jargon":true}
+{"term":"CI/CD","aliases":["continuous integration"],"plain":"CI/CD runs your tests and your release steps automatically after each push.","domain":"test","jargon":true}
+{"term":"Node.js","aliases":["node"],"plain":"Node.js runs JavaScript outside the browser.","domain":"prog","jargon":true}
+{"term":"C++","aliases":[],"plain":"C++ is a programming language.","domain":"prog","jargon":true}
+{"term":"tutorial","aliases":[],"plain":"Not jargon, so it must never be returned.","domain":"term","jargon":false}

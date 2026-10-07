@@ -1,0 +1,127 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact|fork",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "timeout": 15,
+            "args": [
+              "-I",
+              "-B",
+              "-X",
+              "utf8",
+              "-c",
+              "import os,sys,runpy; (sys.version_info>=(3,9) or sys.exit('tutor hooks need Python 3.9 or newer')); p=os.path.join(os.environ.get('CLAUDE_PROJECT_DIR','.'),'.claude','hooks','dispatch.py'); (os.path.isfile(p) or sys.exit(0)); sys.argv=[p]+sys.argv[1:]; runpy.run_path(p,run_name='__main__')",
+              "session-start"
+            ]
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "timeout": 10,
+            "args": [
+              "-I",
+              "-B",
+              "-X",
+              "utf8",
+              "-c",
+              "import os,sys,runpy; (sys.version_info>=(3,9) or sys.exit('tutor hooks need Python 3.9 or newer')); p=os.path.join(os.environ.get('CLAUDE_PROJECT_DIR','.'),'.claude','hooks','dispatch.py'); (os.path.isfile(p) or sys.exit(0)); sys.argv=[p]+sys.argv[1:]; runpy.run_path(p,run_name='__main__')",
+              "user-prompt"
+            ]
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "timeout": 8,
+            "args": [
+              "-I",
+              "-B",
+              "-X",
+              "utf8",
+              "-c",
+              "import os,sys,runpy; (sys.version_info>=(3,9) or sys.exit('tutor hooks need Python 3.9 or newer')); p=os.path.join(os.environ.get('CLAUDE_PROJECT_DIR','.'),'.claude','hooks','dispatch.py'); (os.path.isfile(p) or sys.exit(0)); sys.argv=[p]+sys.argv[1:]; runpy.run_path(p,run_name='__main__')",
+              "pre-tool"
+            ]
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "timeout": 10,
+            "args": [
+              "-I",
+              "-B",
+              "-X",
+              "utf8",
+              "-c",
+              "import os,sys,runpy; (sys.version_info>=(3,9) or sys.exit('tutor hooks need Python 3.9 or newer')); p=os.path.join(os.environ.get('CLAUDE_PROJECT_DIR','.'),'.claude','hooks','dispatch.py'); (os.path.isfile(p) or sys.exit(0)); sys.argv=[p]+sys.argv[1:]; runpy.run_path(p,run_name='__main__')",
+              "post-tool"
+            ]
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "timeout": 15,
+            "args": [
+              "-I",
+              "-B",
+              "-X",
+              "utf8",
+              "-c",
+              "import os,sys,runpy; (sys.version_info>=(3,9) or sys.exit('tutor hooks need Python 3.9 or newer')); p=os.path.join(os.environ.get('CLAUDE_PROJECT_DIR','.'),'.claude','hooks','dispatch.py'); (os.path.isfile(p) or sys.exit(0)); sys.argv=[p]+sys.argv[1:]; runpy.run_path(p,run_name='__main__')",
+              "stop"
+            ]
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "timeout": 5,
+            "args": [
+              "-I",
+              "-B",
+              "-X",
+              "utf8",
+              "-c",
+              "import os,sys,runpy; (sys.version_info>=(3,9) or sys.exit('tutor hooks need Python 3.9 or newer')); p=os.path.join(os.environ.get('CLAUDE_PROJECT_DIR','.'),'.claude','hooks','dispatch.py'); (os.path.isfile(p) or sys.exit(0)); sys.argv=[p]+sys.argv[1:]; runpy.run_path(p,run_name='__main__')",
+              "subagent-start"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

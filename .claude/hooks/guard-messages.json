@@ -1,0 +1,620 @@
+{
+  "rm-danger": {
+    "short": "This command would delete a whole folder tree: the project, your home folder, a drive or a system folder",
+    "why": "Deleted files skip the Recycle Bin and the Trash, so they are gone for good. A wrong path or an empty variable can turn a small cleanup into the deletion of everything.",
+    "safe": "Name the exact folder to remove, for example node_modules, or delete the project yourself in your file explorer.",
+    "lesson": "term-file-ops"
+  },
+  "rm-git": {
+    "short": "This would delete the .git folder, which holds every saved version of the project",
+    "why": "Without .git the save points (commits) and the history are gone, and Git cannot bring them back. Removing it is almost never the fix for a Git problem.",
+    "safe": "To remove one file from Git use git rm --cached on that file; for a Git problem start with a look at git status and git log.",
+    "lesson": "git-repo"
+  },
+  "rm-git-inside": {
+    "short": "This deletes a file inside the .git folder, which keeps every save point of the project",
+    "why": "The .git folder holds the history. Removing a file from it can make Git lose track of your work, and the history cannot be rebuilt from the project files.",
+    "safe": "Run git status first to see what Git knows. To stop tracking one file but keep it, use git rm --cached with that file name.",
+    "lesson": "git-repo"
+  },
+  "rm-recursive": {
+    "short": "This deletes a folder and everything inside it, and it skips the Trash",
+    "why": "Only folders that can be rebuilt, such as node_modules, dist or build, are safe to delete. Anything else may hold work that exists nowhere else.",
+    "safe": "Check that the folder is saved in Git (git status) or copy it first, then delete only what you can rebuild.",
+    "lesson": "term-file-ops"
+  },
+  "delete-outside-project": {
+    "short": "This deletes a file or folder outside the project folder",
+    "why": "The tutor works inside the project. A file in another folder may belong to another project or to you personally, and deleted files do not go to the Recycle Bin.",
+    "safe": "Name a path inside the project, or delete the item yourself in your file explorer after you check it.",
+    "lesson": "files-project-structure"
+  },
+  "win-delete-danger": {
+    "short": "This would delete a system folder, a whole drive, your user folder or the current project",
+    "why": "Windows does not send these deletions to the Recycle Bin. Programs and your own files can be lost together.",
+    "safe": "Name the exact folder to remove, or delete the folder yourself in File Explorer.",
+    "lesson": "term-file-ops"
+  },
+  "win-delete": {
+    "short": "This deletes a folder and its contents, and it skips the Recycle Bin",
+    "why": "Only folders that can be rebuilt, such as node_modules, dist or build, are safe to delete. Anything else may hold work that exists nowhere else.",
+    "safe": "Check that the work is saved in Git first, and name the exact folder.",
+    "lesson": "term-file-ops"
+  },
+  "ps-pipe-delete": {
+    "short": "Remove-Item -Recurse gets its list from the pipe, so it deletes everything the first command lists",
+    "why": "Without a path the deletion covers whatever is listed, and in the project folder that is all your files. The Recycle Bin is skipped.",
+    "safe": "Give Remove-Item an exact path, for example Remove-Item -Recurse node_modules.",
+    "lesson": "term-file-ops"
+  },
+  "sync-delete": {
+    "short": "This copy command also deletes files in the target that are missing from the source",
+    "why": "robocopy /mir, robocopy /purge and rsync --delete make the target an exact copy of the source. If the source is empty or wrong, the target is emptied.",
+    "safe": "Run it with a dry-run option first (robocopy /l or rsync --dry-run) and check which files would go.",
+    "lesson": "term-file-ops"
+  },
+  "format-disk": {
+    "short": "This formats or partitions a disk",
+    "why": "Formatting erases everything on the disk and cannot be undone. A project never needs it.",
+    "safe": "Do disk work yourself in the system tools, with a backup, and outside this project.",
+    "lesson": "sec-least-privilege"
+  },
+  "dd-device": {
+    "short": "This writes straight to a disk device",
+    "why": "Writing to a device can destroy the whole disk, including the operating system. A project never needs it.",
+    "safe": "Write to a normal file instead, or do this yourself in a system tool after you made a backup.",
+    "lesson": "sec-least-privilege"
+  },
+  "forkbomb": {
+    "short": "This starts programs in an endless loop until the computer freezes",
+    "why": "A fork bomb fills the computer with processes. Only a restart stops it, and unsaved work is lost.",
+    "safe": "Do not run it, and treat the place where you found it as untrusted.",
+    "lesson": "term-stop-program"
+  },
+  "inline-delete": {
+    "short": "A small inline program deletes folders recursively",
+    "why": "Rules that watch for rm do not see a delete inside python -c or node -e. The path can be wrong or computed, and the deletion skips the Trash.",
+    "safe": "Use a plain rm with an exact folder name so the command is easy to read, or ask what the program would delete.",
+    "lesson": "term-file-ops"
+  },
+  "memory-wipe": {
+    "short": "This removes or wipes the tutor notes and progress on this computer",
+    "why": "The notes hold your list of learned topics, your own words and the project state. They are stored only here, so a wipe cannot be undone.",
+    "safe": "Run the wipe command yourself in a terminal when you are sure; nothing else needs to touch these notes.",
+    "lesson": "sec-personal-data"
+  },
+  "wide-folder": {
+    "short": "This folder is very wide: it holds personal files, not one project",
+    "why": "In a folder like Desktop, Documents or your home folder, git add or a recursive delete can touch files that have nothing to do with the project. Cloud-sync tools can also damage a .git folder there.",
+    "safe": "Create a new folder just for this project, open that folder in your app, and work there.",
+    "lesson": "cc-start-in-project-root"
+  },
+  "git-force": {
+    "short": "A force push overwrites the history on the remote",
+    "why": "Other people's work, and your own work from another computer, can be lost for good. A normal push never does that.",
+    "safe": "Run git pull first and push normally; to undo a mistake make a new commit with git revert.",
+    "lesson": "git-push"
+  },
+  "git-force-lease-main": {
+    "short": "A forced push to main, master or another shared branch",
+    "why": "Even the safer --force-with-lease can erase shared history on the main branch. Everyone who uses the repository would be affected.",
+    "safe": "Fix the problem with a new commit (git revert) instead of rewriting main.",
+    "lesson": "git-push"
+  },
+  "git-force-lease": {
+    "short": "The flag --force-with-lease makes a force push that first checks whether someone else pushed",
+    "why": "It rewrites the history of the branch on the remote, which is only safe on your own branch after you rebased or amended it. If the branch is shared, others lose their work.",
+    "safe": "Use it only on your own branch and never on main; otherwise make a new commit instead.",
+    "lesson": "git-push"
+  },
+  "git-push-mirror": {
+    "short": "A mirror push makes the remote an exact copy of this computer",
+    "why": "Every branch and tag that exists only on the remote is deleted. That can wipe the shared history.",
+    "safe": "Push the branch you want with git push origin and the branch name.",
+    "lesson": "git-push"
+  },
+  "git-push-delete": {
+    "short": "This deletes a branch or a tag on the remote",
+    "why": "Pull requests that use the branch may close, and other people may be working on it. The commits can become hard to find.",
+    "safe": "Check that the branch is merged and unused, then delete it on the website or confirm here.",
+    "lesson": "git-branch"
+  },
+  "git-push": {
+    "short": "A git push sends your commits to the remote server",
+    "why": "If the repository is public, everyone can read the commits, including any secret that was ever committed. A push is hard to take back.",
+    "safe": "Look at git status and git diff for keys and passwords first, and push to a private repository while you learn.",
+    "lesson": "git-push"
+  },
+  "git-reset-hard": {
+    "short": "The command git reset --hard throws away every uncommitted change in your files",
+    "why": "Git cannot bring back changes that were never committed. The files are set back to the last save point.",
+    "safe": "Save the work first (git stash or a commit), or restore one file with git restore and its name.",
+    "lesson": "git-reset"
+  },
+  "git-clean": {
+    "short": "The command git clean deletes files that Git does not track",
+    "why": "Those files exist only on your disk, so they are gone for good after the command. New files you have not added yet are among them.",
+    "safe": "Run git clean -n first: it only lists what would be deleted.",
+    "lesson": "git-status"
+  },
+  "git-clean-x": {
+    "short": "The command git clean -x also deletes ignored files such as .env and local databases",
+    "why": "Ignored files often hold your keys and local data, and Git has no copy of them. They cannot be restored.",
+    "safe": "Run git clean -n to see the list, and delete the named files one by one.",
+    "lesson": "git-ignore"
+  },
+  "git-discard": {
+    "short": "This throws away your uncommitted changes in those files",
+    "why": "Git cannot bring back changes that were never committed. The files go back to the last save point.",
+    "safe": "Commit or stash first if you might want the changes; for one file, git restore with its name is the exact tool.",
+    "lesson": "git-restore"
+  },
+  "git-branch-D": {
+    "short": "Deleting or moving a branch by force can lose commits",
+    "why": "git branch -D deletes a branch even if its work was never merged, and git branch -f moves it without checks. The commits can become hard to find.",
+    "safe": "Use git branch -d (lowercase), which refuses when the work is not merged.",
+    "lesson": "git-branch"
+  },
+  "git-branch-main": {
+    "short": "This deletes or replaces the main branch",
+    "why": "The main branch is the shared line of the project. Removing it breaks the repository for everyone who uses it.",
+    "safe": "Leave main alone; work on a feature branch and merge it when it is ready.",
+    "lesson": "git-branch"
+  },
+  "git-stash-drop": {
+    "short": "This deletes saved stashes",
+    "why": "A stash holds changes you set aside, and a dropped stash is hard to bring back. Clearing all stashes removes every one of them.",
+    "safe": "Look at the stash with git stash show first, and drop only what you no longer need.",
+    "lesson": "git-stash"
+  },
+  "git-history": {
+    "short": "This rewrites or permanently erases Git history",
+    "why": "It can destroy your save points and break every other copy of the repository. When a secret was committed, the key must be changed first, not the history.",
+    "safe": "If a secret was committed, revoke the key first; a history rewrite is a last step that you run yourself.",
+    "lesson": "git-reflog"
+  },
+  "git-rebase": {
+    "short": "Rebasing rewrites commits",
+    "why": "Rebasing is only safe on commits you have not pushed yet. On pushed commits it causes conflicts and lost work for others.",
+    "safe": "Use git merge for commits that are already on the remote.",
+    "lesson": "git-branch"
+  },
+  "git-amend": {
+    "short": "Amending replaces the last commit",
+    "why": "If that commit is already pushed, publishing the new one would need a force push, which is risky. Amending a local commit is harmless.",
+    "safe": "Make a new commit instead; amend only a commit that has not been pushed.",
+    "lesson": "git-commit"
+  },
+  "git-no-verify": {
+    "short": "The flag --no-verify skips the checks that run before a commit or a push",
+    "why": "Those checks exist to catch mistakes such as a committed secret or broken tests. Skipping them hides the problem instead of fixing it.",
+    "safe": "Fix what the check reports and run the command again without --no-verify.",
+    "lesson": "git-commit"
+  },
+  "git-rm": {
+    "short": "Removing with git rm -r takes tracked files out of your folder as well",
+    "why": "The files disappear from the working folder, not only from Git. Work that was not committed is lost.",
+    "safe": "To stop tracking a file but keep it, use git rm --cached with the file name.",
+    "lesson": "git-staging"
+  },
+  "git-config-exec": {
+    "short": "This Git setting makes Git run a program that is named in the setting",
+    "why": "Settings such as core.fsmonitor, core.sshCommand, an alias that starts with an exclamation mark or credential.helper can run any program every time Git runs. That is a known way to hide a command.",
+    "safe": "Say what you want to achieve and use a normal Git command; set an editor or pager yourself in your own terminal if you need one.",
+    "lesson": "sec-supply-chain"
+  },
+  "git-config-cred": {
+    "short": "This stores the Git password in a plain text file",
+    "why": "Any program on the computer can read that file. A leaked token gives access to your whole GitHub account.",
+    "safe": "Use gh auth login or the system credential manager, which keeps the token safe.",
+    "lesson": "sec-secrets"
+  },
+  "git-config-global": {
+    "short": "This changes your Git settings for every project on this computer",
+    "why": "A global setting such as your name, e-mail or default branch applies to all repositories, not only this one. A wrong value shows up in every commit.",
+    "safe": "Check the value, then confirm; use the no-reply e-mail address from your GitHub settings so your real address stays private.",
+    "lesson": "git-identity"
+  },
+  "git-remote": {
+    "short": "This changes where git push sends your code",
+    "why": "A wrong or look-alike address would send your code to someone else's server. The address should be one you typed yourself.",
+    "safe": "Copy the address from your own repository page and compare the owner name and the repository name.",
+    "lesson": "git-remote"
+  },
+  "git-url-cred": {
+    "short": "A password or token is written inside the web address",
+    "why": "The address is saved in plain text in .git/config and appears in logs and error messages. Anyone who reads it can use the token.",
+    "safe": "Use the plain address and log in with gh auth login.",
+    "lesson": "sec-secrets"
+  },
+  "git-init-home": {
+    "short": "A git repository would start in your home, Desktop, Documents or Downloads folder, or in a drive root",
+    "why": "Git would start tracking every file there, including private ones. A later git add with a dot could put those files into a repository.",
+    "safe": "Create a new folder for the project, enter it, and run git init there.",
+    "lesson": "git-init"
+  },
+  "commit-default-branch": {
+    "short": "You are committing straight to the default branch of a project that has a remote",
+    "why": "Work on main goes into the shared line at once. A separate branch lets you review and undo more safely.",
+    "safe": "Create a branch with git switch -c and a name first, then commit there.",
+    "lesson": "git-branch"
+  },
+  "no-gitignore": {
+    "short": "There is no .gitignore yet, and git add . would add everything",
+    "why": "Without .gitignore, secrets such as .env and large folders such as node_modules can end up in the commit. Git keeps them forever once they are committed.",
+    "safe": "Create .gitignore first, with .env and node_modules in it, and add files by name.",
+    "lesson": "git-ignore"
+  },
+  "gh-repo-delete": {
+    "short": "This deletes a GitHub repository",
+    "why": "Deleting is permanent: the code, issues, pull requests and history are lost. Other copies, such as clones, may not exist.",
+    "safe": "Do it yourself on github.com in the repository settings, when you are sure.",
+    "lesson": "gh-repo"
+  },
+  "gh-visibility": {
+    "short": "This makes a repository public",
+    "why": "Everyone on the internet can then read all files and the full history, including old commits. A secret that was ever committed becomes public too.",
+    "safe": "Check for secrets first (the before-push checklist), and keep the repository private while you learn.",
+    "lesson": "gh-visibility"
+  },
+  "gh-token": {
+    "short": "This prints the GitHub login token",
+    "why": "The token works like a password for your whole GitHub account. Printing it puts it into this conversation and into local logs.",
+    "safe": "Let gh use the token by itself; check the login with gh auth status, which does not print it.",
+    "lesson": "gh-auth"
+  },
+  "gh-secret": {
+    "short": "This changes secrets stored on GitHub",
+    "why": "Secrets on GitHub feed your automated workflows and deployments. A wrong or deleted value can break them or leak data.",
+    "safe": "Check which repository and which secret name, and set the value yourself on the website or in your terminal.",
+    "lesson": "sec-secrets"
+  },
+  "gh-api-write": {
+    "short": "This gh api call changes things on GitHub directly",
+    "why": "A POST, PUT, PATCH or DELETE call can create, change or delete real data, such as branches or repositories. The result cannot always be undone.",
+    "safe": "Say which repository and what changes, or use the matching gh command (gh pr, gh issue), which is easier to read.",
+    "lesson": "gh-cli"
+  },
+  "gh-gist": {
+    "short": "A gist publishes file contents on a web page",
+    "why": "A public gist is visible to everyone and to search engines. A secret in the file would be exposed.",
+    "safe": "Check the file for private data, and use a secret gist (not public) when you share it with a few people.",
+    "lesson": "gh-visibility"
+  },
+  "pipe-shell": {
+    "short": "This downloads a script and runs it at once",
+    "why": "Nobody reads the script before it runs, and it can do anything on your computer. Attackers use this shape because it is easy to copy and paste.",
+    "safe": "Download the script to a file, read it (or ask for an explanation), and then run it; for official tools use the package manager.",
+    "lesson": "sec-supply-chain"
+  },
+  "encoded-ps": {
+    "short": "An encoded command hides what will run",
+    "why": "The text is not readable, so nobody can check what the command does. Real tools rarely need this form.",
+    "safe": "Write the command in plain text so it can be read.",
+    "lesson": "sec-supply-chain"
+  },
+  "lolbin-download": {
+    "short": "A Windows system tool is used to download and run something",
+    "why": "Tools such as certutil, bitsadmin and mshta are a common way to install malware, because they look harmless. The download is not checked.",
+    "safe": "Use the package manager of the project, or download the file in your browser and inspect it before you run it.",
+    "lesson": "sec-supply-chain"
+  },
+  "obfuscated": {
+    "short": "A command is hidden by encoding and is decoded just before it runs",
+    "why": "No one can read what will run. Hiding code this way is typical for malware.",
+    "safe": "Write the command in plain text so it can be read.",
+    "lesson": "sec-supply-chain"
+  },
+  "system-config": {
+    "short": "This changes security or system settings",
+    "why": "Firewall, antivirus, execution policy, users and boot settings affect the whole computer, not only this project. A wrong value can leave the computer open to attacks.",
+    "safe": "Do it yourself in the system settings and tell the tutor what changed; for npm scripts on Windows the usual fix is RemoteSigned for the current user.",
+    "lesson": "sec-least-privilege"
+  },
+  "persistence": {
+    "short": "This makes something start by itself: a startup entry, a schedule, a shell profile or an alias",
+    "why": "A program that runs on every start is how malware stays installed. It also changes how every future terminal behaves.",
+    "safe": "Check that the project really needs it, and add startup entries yourself.",
+    "lesson": "sec-least-privilege"
+  },
+  "reg-write": {
+    "short": "This changes the Windows registry",
+    "why": "The registry holds settings for Windows and all programs. A mistake can stop programs or Windows from working.",
+    "safe": "Do it yourself, export a backup of the key first, and change only the value you know.",
+    "lesson": "sec-least-privilege"
+  },
+  "cred-store": {
+    "short": "This reads saved passwords from the system credential store",
+    "why": "Those passwords belong to your accounts, not to the project. A project never needs them.",
+    "safe": "Do not read the store; sign in with the login command of the tool instead.",
+    "lesson": "sec-secrets"
+  },
+  "env-redirect": {
+    "short": "This points tools at another API server or proxy",
+    "why": "Keys and requests sent to that server can be read or stolen. It is a known attack on coding tools.",
+    "safe": "Only the person at the keyboard should change these settings, in their own terminal, and only for an address they trust.",
+    "lesson": "sec-secrets-and-ai"
+  },
+  "env-exec": {
+    "short": "This environment variable makes a program load or run other code",
+    "why": "Variables such as BASH_ENV, PYTHONPATH, LD_PRELOAD, GIT_SSH_COMMAND, PAGER, EDITOR, a NODE_OPTIONS with --require, or a PATH that starts with a relative folder run files that you did not read. They are a known way to hide a command.",
+    "safe": "Run the program without the variable; if you really need it, set it yourself in your own terminal.",
+    "lesson": "sec-supply-chain"
+  },
+  "sudo": {
+    "short": "Running with sudo or as administrator gives a command full control of the computer",
+    "why": "Projects almost never need it. A package or script that runs with sudo can change or delete anything.",
+    "safe": "Try the command without sudo, or install tools only for your own user.",
+    "lesson": "term-sudo-admin"
+  },
+  "chmod-777": {
+    "short": "Mode 777 lets every user read, change and run the files",
+    "why": "Other accounts and programs on the machine get full access. It is also a sign that a permission problem was not understood.",
+    "safe": "Use a narrower mode: 755 for programs and folders, 644 for normal files, and never apply it to a whole folder tree.",
+    "lesson": "sec-least-privilege"
+  },
+  "chown-r": {
+    "short": "Changing owners recursively can lock you out of your own files",
+    "why": "A wrong target, such as the root folder or your home folder, breaks the system or your account. The change touches every file below it.",
+    "safe": "Name the exact folder, and never use it on the root folder or on your home folder.",
+    "lesson": "sec-least-privilege"
+  },
+  "kill-all": {
+    "short": "This stops programs by name or all processes",
+    "why": "It can stop your editor, Claude Code itself or a program with unsaved work. Killing node or python can also stop the dev server and background tasks.",
+    "safe": "Stop one program by its process id (ps or Get-Process shows it), or press Ctrl+C in the terminal that runs it.",
+    "lesson": "term-stop-program"
+  },
+  "shutdown": {
+    "short": "This turns off or restarts the computer",
+    "why": "Everything that is not saved is lost, and the session ends. A project never needs it.",
+    "safe": "Close your work yourself and use the normal shutdown or restart.",
+    "lesson": "term-stop-program"
+  },
+  "unresolvable-program": {
+    "short": "I cannot see which program this runs",
+    "why": "The program name comes from a variable, a substitution or an expression, so the safety check cannot read it. The same shape is used to hide a dangerous command.",
+    "safe": "Write the program name directly in the command, for example git instead of a variable.",
+    "lesson": "term-command-anatomy"
+  },
+  "claude-config": {
+    "short": "This changes the Claude Code setup: an MCP server, a plugin or a setting",
+    "why": "An MCP server or a plugin can run programs and read your files with your permissions. Settings decide what the assistant is allowed to do.",
+    "safe": "Check where the server or plugin comes from, and change it yourself with the menu or in your own terminal.",
+    "lesson": "cc-settings-scopes"
+  },
+  "pkg-add": {
+    "short": "A new package is added to the project",
+    "why": "Adding a package means running other people's code. Look-alike names are a known attack (typosquatting), so one wrong letter can install malware.",
+    "safe": "Check the exact spelling, that the package is well known (downloads, last update, link to a real repository), and say in one sentence what it is for.",
+    "lesson": "sec-supply-chain"
+  },
+  "pkg-run": {
+    "short": "A runner such as npx downloads and runs a package straight from the internet",
+    "why": "The package runs at once with your permissions, and a look-alike name is a known attack. It is not part of the project yet, so nobody has checked it.",
+    "safe": "Check the spelling and that the project is well known; install it into the project first if you will use it more than once.",
+    "lesson": "sec-supply-chain"
+  },
+  "pkg-url": {
+    "short": "A package is installed from a web address, a Git repository or a file",
+    "why": "The checks of the package registry are skipped, and the code behind the address can change at any time. It runs on your computer when it is installed.",
+    "safe": "Prefer a normal registry package with a fixed version.",
+    "lesson": "sec-supply-chain"
+  },
+  "pkg-index": {
+    "short": "The package manager is pointed at another package source",
+    "why": "A look-alike server can hand out malicious versions of well-known names (dependency confusion). The default registry is checked more closely.",
+    "safe": "Use the default registry unless your team told you to use another one.",
+    "lesson": "sec-supply-chain"
+  },
+  "pkg-global": {
+    "short": "A global install changes the whole computer, not only this project",
+    "why": "Global tools are shared by all projects and can need extra rights. A project that depends on one cannot be moved to another computer easily.",
+    "safe": "Install it inside the project (without -g), or use npx for a one-time run.",
+    "lesson": "term-package-managers"
+  },
+  "pkg-sudo": {
+    "short": "A package install with sudo",
+    "why": "A malicious package would run with full control of the computer. A permission error points to a wrong setup, and sudo hides the cause.",
+    "safe": "Fix the permissions problem: use a virtual environment (python -m venv .venv) or a user-level install.",
+    "lesson": "term-sudo-admin"
+  },
+  "pkg-break": {
+    "short": "The flag --break-system-packages can break the Python that the operating system needs",
+    "why": "System tools depend on the packages that are installed there. A wrong version can stop them from working.",
+    "safe": "Create a virtual environment with python -m venv .venv and install the package there.",
+    "lesson": "term-package-managers"
+  },
+  "docker-danger": {
+    "short": "This container option opens the host: the whole disk, the Docker engine or the host network",
+    "why": "It removes the protection that containers give. A program inside can then read, change or delete files on your computer.",
+    "safe": "Mount only the folder the container needs, and publish only the ports you need.",
+    "lesson": "sec-least-privilege"
+  },
+  "docker-prune": {
+    "short": "This deletes Docker data",
+    "why": "With volumes it deletes the data of your databases for good. Images and containers are only rebuilt if the files for them still exist.",
+    "safe": "Check what will go (docker system df) and keep the volumes unless you want the data gone.",
+    "lesson": "data-backup-restore"
+  },
+  "db-destroy": {
+    "short": "This deletes or wipes database data",
+    "why": "The data cannot be restored unless there is a backup. The command may point at a database that holds real users.",
+    "safe": "Check that this is the local test database, make a copy first, and name the exact rows with a where condition.",
+    "lesson": "data-backup-restore"
+  },
+  "db-destroy-prod": {
+    "short": "This wipes data and the command mentions prod or a hosted database",
+    "why": "A production database holds the data of real users, and a wipe there cannot be undone. A mix-up between test and production is a known cause of big losses.",
+    "safe": "Run it yourself only after a backup and a second look; use the local test database for tests.",
+    "lesson": "data-backup-restore"
+  },
+  "cloud-destroy": {
+    "short": "This deletes cloud resources",
+    "why": "It can stop a live service and remove data, and the bills can keep running if you get it wrong. The cloud account may not be the one you think.",
+    "safe": "Check the account and the list of resources (a plan or dry run) and run it yourself.",
+    "lesson": "proj-environments"
+  },
+  "publish": {
+    "short": "This publishes your code or app to the public",
+    "why": "Everybody can use or read it, and a published package version cannot be changed later. Keys or private files inside would be public too.",
+    "safe": "Check the version and the files that will be included (use the dry-run option), and look for keys and private files.",
+    "lesson": "proj-deployment"
+  },
+  "read-secret": {
+    "short": "This prints the content of a secret file or variable into the conversation",
+    "why": "Everything in the conversation is sent to Anthropic and kept in local logs, so a key shown here counts as exposed. The program itself can read the file without anyone seeing the content.",
+    "safe": "Check that the file exists with ls or git check-ignore -v .env, and check variable names with doctor.py envcheck.",
+    "lesson": "sec-secrets"
+  },
+  "env-dump": {
+    "short": "This lists all environment variables",
+    "why": "The list can contain every key and password on the computer. Printing it puts them into the conversation.",
+    "safe": "Ask for one variable by name, or filter the list with a pattern that has no key, token, secret or password word in it.",
+    "lesson": "term-env-vars"
+  },
+  "exfil-secret": {
+    "short": "A secret file is combined with a command that sends data out",
+    "why": "That is how keys get stolen. A key sent to a server cannot be taken back.",
+    "safe": "Keep the key in an environment variable or in .env and let the program read it; test an API with a command you type yourself.",
+    "lesson": "sec-secrets"
+  },
+  "exfil-upload": {
+    "short": "A local file is sent to a server on the internet",
+    "why": "The server keeps a copy, and private data in the file would leave the computer. It is worth checking which server it is.",
+    "safe": "Check the address and the file content first, or send it to localhost while you test.",
+    "lesson": "sec-personal-data"
+  },
+  "remote-xfer": {
+    "short": "This copies data to or from another computer",
+    "why": "Private files could be included, and the other computer may not be yours. A remote shell can change things there.",
+    "safe": "Check the computer name and list the files that will be copied.",
+    "lesson": "sec-personal-data"
+  },
+  "copy-secret": {
+    "short": "A secret file is copied to a name that is not protected",
+    "why": "The copy is not ignored by Git and not hidden from tools, so it can end up in a commit. The protection is tied to the file name.",
+    "safe": "Keep secrets only in .env or a similarly named file, which is already ignored.",
+    "lesson": "sec-secrets"
+  },
+  "tunnel": {
+    "short": "This opens your computer to the internet",
+    "why": "Anyone with the link can reach what runs here, which may include your files. The link is often shared by mistake.",
+    "safe": "Use a tunnel only for a short demo, stop it afterwards, and serve only a folder with nothing private in it.",
+    "lesson": "web-localhost-ports"
+  },
+  "bind-all": {
+    "short": "The server listens on every network address, or serves a whole folder over HTTP",
+    "why": "Everyone on the same Wi-Fi can reach the project, and a folder server also shows files such as .env. That is risky in cafes and shared offices.",
+    "safe": "Use 127.0.0.1 or localhost for testing: only your own computer can reach it.",
+    "lesson": "web-localhost-ports"
+  },
+  "secret-in-command": {
+    "short": "The command contains something that looks like a real secret",
+    "why": "A key typed into a command ends up in the conversation, the shell history and local logs. The tutor never writes a real key; you paste it into .env yourself.",
+    "safe": "Put the value into .env yourself, read it from the environment in the code, and revoke the key if it was already shared.",
+    "lesson": "sec-secrets"
+  },
+  "hook-only-path": {
+    "short": "This file is written only by the scripts of the tutor",
+    "why": "It holds your progress, the chat copy or other state that must come from real events. Writing it by hand would make the record untrue.",
+    "safe": "Leave the file alone; write notes in now.md or the journal, and use the inbox for records.",
+    "lesson": "cc-hooks"
+  },
+  "config-write": {
+    "short": "This file decides what the assistant is allowed to do",
+    "why": "Changing it changes the safety rules. Only the person at the keyboard should do this.",
+    "safe": "Show the person the exact change and let them make it, or use the installer or doctor script that keeps a backup.",
+    "lesson": "cc-settings-scopes"
+  },
+  "guard-off": {
+    "short": "This text turns off hooks or permission checks",
+    "why": "Settings such as disableAllHooks or bypassPermissions switch the safety checks off for the whole project. A tool or a web page should never ask for that.",
+    "safe": "Leave the safety settings as they are; if a check is in the way, ask the person to look at it together.",
+    "lesson": "cc-hooks"
+  },
+  "guard-error": {
+    "short": "The safety check could not finish for this command",
+    "why": "The command contains a word that can be dangerous (such as rm, git push, curl or sudo), and the check had a problem. It is safer to ask than to guess.",
+    "safe": "Read the command, and allow it only if you understand every part.",
+    "lesson": "cc-hooks"
+  },
+  "secret-in-file": {
+    "short": "The text contains something that looks like a real secret",
+    "why": "A key saved in a file can be committed, copied and read by others. The tutor never writes real secrets into files; you paste them into .env yourself.",
+    "safe": "Write a placeholder such as API_KEY= in .env.example, and paste the real value into .env yourself.",
+    "lesson": "sec-secrets"
+  },
+  "secret-file-write": {
+    "short": "A file that usually holds secrets would be written",
+    "why": "Files such as .env hold real keys and are ignored by Git on purpose. The tutor writes only the .env.example file with placeholders.",
+    "safe": "Create .env.example with placeholder values, then copy it to .env and fill in the real values yourself.",
+    "lesson": "sec-secrets"
+  },
+  "write-outside-project": {
+    "short": "This file is outside the project folder",
+    "why": "Files in other folders may belong to other projects or to you personally. The tutor works inside the project.",
+    "safe": "Use a path inside the project, or tell the person where the file should go.",
+    "lesson": "files-project-structure"
+  },
+  "script-with-danger": {
+    "short": "The script that this command runs contains a risky command",
+    "why": "The safety check read the script and found a command that is on its list. Running a script runs every line in it.",
+    "safe": "Read the script (or ask for an explanation line by line) and run it only if every line is fine.",
+    "lesson": "sec-supply-chain"
+  },
+  "command-too-long": {
+    "short": "The command is very long",
+    "why": "A very long command is hard to read and hard to check. Long padding is also used to hide a dangerous part.",
+    "safe": "Split it into smaller steps, or put the commands in a script file you can read.",
+    "lesson": "term-command-anatomy"
+  },
+  "secret-scan-incomplete": {
+    "short": "The check for secrets did not finish",
+    "why": "The text was too long, or the check ran out of time. So nobody can call it clean.",
+    "safe": "Split the text into smaller parts, or look for keys and passwords by eye before you continue.",
+    "lesson": "sec-secrets"
+  },
+  "scan-secret-file": {
+    "short": "A file with a secret-looking name would go into Git",
+    "why": "Git keeps every version for good. A push copies it to GitHub, where bots find keys within minutes.",
+    "safe": "Leave it out: put its name in .gitignore and add your other files by name. If a key was already shared, make a new key first.",
+    "lesson": "sec-secrets"
+  },
+  "scan-secret-content": {
+    "short": "The changes contain something that looks like a secret",
+    "why": "A key in a commit stays in the history even if you delete it later. Anyone who can see the repository can find it there.",
+    "safe": "Move the value into .env (Git ignores it), read it from the environment, and commit again. If it already left this computer, revoke the key and make a new one.",
+    "lesson": "sec-rotate-leaked-key"
+  },
+  "scan-private-notes-add": {
+    "short": "Private tutor notes or local settings would go into Git",
+    "why": "They hold your own words and choices. They are meant to stay on this computer.",
+    "safe": "Leave .claude/agent-memory and .claude/settings.local.json out of the command and add your project files by name.",
+    "lesson": "sec-personal-data"
+  },
+  "scan-private-notes-push": {
+    "short": "Git already tracks private tutor notes, and a push would publish them",
+    "why": "Once pushed, anyone who can see the repository can read your notes. Removing them later does not remove them from the history.",
+    "safe": "Stop tracking them first: run git rm --cached -r .claude/agent-memory yourself, commit that, then push.",
+    "lesson": "sec-personal-data"
+  },
+  "scan-incomplete": {
+    "short": "The check for secrets could not be done",
+    "why": "The check failed or ran out of time. So nobody can say this commit is clean.",
+    "safe": "Look at git status and git diff yourself, or run the command in smaller steps.",
+    "lesson": "sec-secrets"
+  },
+  "claude-guard-off": {
+    "short": "This starts Claude Code with its hooks or permission prompts switched off",
+    "why": "A flag such as --bare, --settings or --dangerously-skip-permissions can skip the hooks of this project, so the new session is not checked by this guard. Only the person at the keyboard should decide that.",
+    "safe": "Start Claude Code normally in your own terminal, or ask the person to approve the exact flag and folder first.",
+    "lesson": "cc-hooks"
+  },
+  "helper-script": {
+    "short": "This runs a helper script that rewrites settings, removes the tutor kit or sends notes out",
+    "why": "The helper can change settings.json, delete or replace the tutor files, or upload your learning notes to GitHub. Those changes affect how the assistant behaves or what leaves this computer.",
+    "safe": "Tell the person what the helper changes and run it only after they say yes in the chat, or let them run it in their own terminal. The read-only check needs no question.",
+    "lesson": "cc-settings-scopes"
+  }
+}

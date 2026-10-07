@@ -1,0 +1,126 @@
+{
+ "_note": "Manifest cases for archrules.check_file. expect = the dependency names the tripwire lists (sorted); [] = no tripwire; null = the file is skipped.",
+ "cases": [
+  {
+   "name": "package.json, no previous",
+   "rel": "package.json",
+   "content": "{\"dependencies\": {\"express\": \"^4\", \"cors\": \"1\"}, \"devDependencies\": {\"jest\": \"1\"}}",
+   "expect": [
+    "cors",
+    "express",
+    "jest"
+   ]
+  },
+  {
+   "name": "package.json, only new names",
+   "rel": "package.json",
+   "content": "{\"dependencies\": {\"express\": \"^4\", \"cors\": \"1\", \"@scope/x\": \"1\"}}",
+   "previous": "{\"dependencies\": {\"express\": \"^4\"}}",
+   "expect": [
+    "@scope/x",
+    "cors"
+   ]
+  },
+  {
+   "name": "package.json, nothing new",
+   "rel": "package.json",
+   "content": "{\"dependencies\": {\"express\": \"^4\"}}",
+   "previous": "{\"dependencies\": {\"express\": \"^4\"}}",
+   "expect": []
+  },
+  {
+   "name": "package.json, broken JSON",
+   "rel": "package.json",
+   "content": "{ \"dependencies\": { \"express\": ",
+   "expect": []
+  },
+  {
+   "name": "requirements.txt",
+   "rel": "requirements.txt",
+   "content": "# comment\nflask==2.0\nRequests[security]>=2\n-r other.txt\ngit+https://example.test/y.git\nnumpy ; python_version>'3'\n",
+   "expect": [
+    "flask",
+    "numpy",
+    "requests"
+   ]
+  },
+  {
+   "name": "requirements-dev.txt",
+   "rel": "requirements-dev.txt",
+   "content": "pytest\n",
+   "expect": [
+    "pytest"
+   ]
+  },
+  {
+   "name": "pyproject.toml",
+   "rel": "pyproject.toml",
+   "content": "[project]\nname = \"x\"\ndependencies = [\n  \"requests>=2\",   # comment ]\n  \"fastapi[standard]\",\n]\n[project.optional-dependencies]\ndev = [\"pytest\", \"ruff\"]\n[tool.poetry.dependencies]\npython = \"^3.9\"\ndjango = \"^4\"\n",
+   "expect": [
+    "django",
+    "fastapi",
+    "pytest",
+    "requests",
+    "ruff"
+   ]
+  },
+  {
+   "name": "Cargo.toml",
+   "rel": "Cargo.toml",
+   "content": "[package]\nname=\"x\"\n[dependencies]\nserde = \"1\"\ntokio = { version = \"1\", features = [\"full\"] }\n[dev-dependencies]\ncriterion.workspace = true\n[dependencies.rand]\nversion = \"0.8\"\n",
+   "expect": [
+    "criterion",
+    "rand",
+    "serde",
+    "tokio"
+   ]
+  },
+  {
+   "name": "go.mod",
+   "rel": "go.mod",
+   "content": "module x\ngo 1.21\nrequire github.com/gin-gonic/gin v1.9.0\nrequire (\n\tgolang.org/x/text v0.3.0 // indirect\n\tgithub.com/spf13/cobra v1.7.0\n)\n",
+   "expect": [
+    "github.com/gin-gonic/gin",
+    "github.com/spf13/cobra",
+    "golang.org/x/text"
+   ]
+  },
+  {
+   "name": "Gemfile",
+   "rel": "Gemfile",
+   "content": "source 'https://rubygems.org'\ngem 'rails', '~> 7'\n  gem \"puma\"\n",
+   "expect": [
+    "puma",
+    "rails"
+   ]
+  },
+  {
+   "name": "composer.json",
+   "rel": "composer.json",
+   "content": "{\"require\": {\"php\": \">=8\", \"ext-json\": \"*\", \"laravel/framework\": \"^10\"}}",
+   "expect": [
+    "laravel/framework"
+   ]
+  },
+  {
+   "name": "nested manifest",
+   "rel": "web/package.json",
+   "content": "{\"dependencies\": {\"vue\": \"3\"}}",
+   "expect": [
+    "vue"
+   ]
+  },
+  {
+   "name": "lockfile is ignored",
+   "rel": "package-lock.json",
+   "content": "{\"dependencies\": {\"a\": {}}}",
+   "expect": null
+  },
+  {
+   "name": "node_modules is ignored",
+   "rel": "node_modules/x/package.json",
+   "content": "{\"dependencies\": {\"a\": \"1\"}}",
+   "expect": null
+  }
+ ]
+}

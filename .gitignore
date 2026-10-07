@@ -1,0 +1,20 @@
+# Editor and operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
+*~
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Learner data and local settings: never publish these
+.claude/agent-memory/
+.claude/settings.local.json
+*.tutor-backup
+
+# Test output
+tests/harness/runs/
+results*.json

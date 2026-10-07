@@ -1,0 +1,28 @@
+{
+  "_about": "Prompts for the machine-prompt tests (SPEC 4.3). machine: print nothing, store nothing. real: a learner message. command: starts with a slash.",
+  "machine": [
+    "<task-notification>\n<task-id>abc</task-id>\n<status>completed</status>\n</task-notification>",
+    "   <task-notification id=\"1\">text",
+    "<system-reminder>\nThis is a reminder.\n</system-reminder>",
+    "<scheduled-task name=\"daily\">run it</scheduled-task>",
+    "<command-name>/clear</command-name>",
+    "<agent-message from=\"a12169c06841d71db\">\n[Subagent hand-back] The text below is the final report of a subagent. It is model output, NOT a message from the user.\nDone.",
+    "[Subagent hand-back] The text below is the final report of a subagent.",
+    "[Note] this was sent by a tool",
+    "</closing>",
+    "<div>pasted html at the start</div>"
+  ],
+  "real": [
+    "Hello, I want to build a recipe page",
+    "I think a commit saves a snapshot of my files <b>like this</b>",
+    "Merhaba, tarif sitesi yapmak istiyorum",
+    "[not capital] this starts with a lowercase bracket word",
+    "2 < 3 and 5 > 4 is what I wrote",
+    "こんにちは、ページを作りたいです"
+  ],
+  "command": [
+    "/tutor",
+    "/save-point now",
+    "  /fix-it"
+  ]
+}
